@@ -14,6 +14,7 @@ When the ESP32 boots, the default mode is pin D10 LOW, which places the SAWbird 
 
 The total cost for all parts is less than $25.  The C6 boards are commonly sold as singles or bundles of three. Wiring harnesses are inexpensive in quantity.  Individual eletronic components are inexpensive and can be ordered in small quantities from Mouser or Digikey but will have minimum shipping costs.  This circuit uses two resistors, a decoupling capacitor, and a common transistor and mosfet.   Ask a friend or shop smartly!
 
+![simple c6 switching circuit](simpler-3v-5v-switch-circuit-4parts.png)
 
 # How To Implement - how WE implemented it
 The ezRA software program "ezCol.py" makes a call to hidusb-relay-cmd.exe, a program that that accepts two command line flags, ON/OFF and a number to signify which relay to operate on multi-relay boards.<br/>
@@ -28,3 +29,7 @@ pyinstaller usb-relay-cmd.py <br/>
 {compiling work will be done} <br/>
 A usb-relay-cmd.exe file will be in the dist directory, also a "_internal" directory.  Copy both of these into the directory where ezRA expects to find the exe file.<br/>
 The ezRA code will send the command ON/OFF and relay number to the program, which makes an HTTP request to the ESP32 and modifies pin D10 accordingly.<br/>
+
+Here is a photo of the C6 deployed in January 2026, with the external antenna taped to a wood stir stick and pushed down the non-metallic conduit.  This gets the 2.4GHz tx/rx outside the metal box.
+
+![deployed January 2026](january-deployed-c6-with-ext-antenna.jpg)

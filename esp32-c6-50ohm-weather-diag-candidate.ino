@@ -13,19 +13,21 @@ PIN D10 to signal the Sawbird
 Complie as XIAO_ESP32C6
 External antenna selected - using a 31mm wire
 BME280 connected to SDA/SCL for environmental logging
-DIAG to show dynamic variables, for fun
+DIAG to show dynamic variables
+API for easy SQLite weather recording
+Wifi sleep disabled
 */
 Adafruit_BME280 bme; // I2C
 
 const char* chip_info;
 const char* ssid = "YOUR_SSID";
-const char* password = "SECRET_PASS";
+const char* password = "YOUR_PASSWORD";
 const int switchPin = D10; // sawbird switch
 WebServer server(80);
-IPAddress staticIP(10, 1, 1, 13); // ESP32 static IP
-IPAddress gateway(10, 1, 1, 1);    // IP Address of your network gateway (router)
+IPAddress staticIP(192, 168, 1, 13); // ESP32 static IP
+IPAddress gateway(192, 168, 1, 1);    // IP Address of your network gateway (router)
 IPAddress subnet(255, 255, 255, 0);   // Subnet mask
-IPAddress primaryDNS(10, 1, 1, 1); // Primary DNS (optional)
+IPAddress primaryDNS(192, 168, 1, 1); // Primary DNS (optional)
 IPAddress secondaryDNS(8, 8, 4, 4);   // Secondary DNS (optional)
 const char* hostname = "esp32-sawbird";
 
@@ -48,7 +50,16 @@ void handleWeather() {
     server.send(200, "text/plain", weather);
 }
 
-void printSystemInfo() { //vibecoded
+void handleWeatherAPI() { // print three values for data processing  Temp/Pressure/Humidity
+    float humidity = bme.readHumidity(); // percentage
+    //float temp = 1.8 * bme.readTemperature() + 32; //F
+    float temp = bme.readTemperature(); //C
+    float pressure = bme.readPressure() / 100.0F; //millibars
+    String weather = String(temp) + " " + String(pressure) + " " + String(humidity);
+    server.send(200, "text/plain", weather);
+}
+
+void printSystemInfo() { //vibecoded, but this looks accurate
 esp_chip_info_t chip_info;
 esp_chip_info(&chip_info);
 String message = "--- ESP32-C6 Chip Statistics ---\n";
@@ -97,6 +108,7 @@ void setup() {
   
   WiFi.setHostname(hostname);
   WiFi.begin(ssid, password);
+  WiFi.setSleep(false);
   while (WiFi.status() != WL_CONNECTED) {
   delay(1000);
   Serial.println("Connecting to WiFi...");
@@ -115,6 +127,7 @@ void setup() {
   server.on("/sawbird/50ohm", handleOff);
   server.on("/esp32/DIAG", printSystemInfo);
   server.on("/esp32/WEATHER", handleWeather);
+  server.on("/esp32/WEATHER-API", handleWeatherAPI);
   server.begin();
 }
 

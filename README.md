@@ -33,3 +33,8 @@ The ezRA code will send the command ON/OFF and relay number to the program, whic
 Here is a photo of the C6 deployed in January 2026, with the external antenna taped to a wood stir stick and pushed down the non-metallic conduit.  This gets the 2.4GHz tx/rx outside the metal box.
 
 ![deployed January 2026](january-deployed-c6-with-ext-antenna.jpg)
+
+September 2026 - added WiFi sleep disable, which makes the esp32 respond very quickly between queries.  My home network would drop the link and never recover.
+Added weather API, which returns the BME module values without any headers.  Insert them into sqlite more easily.
+Added weather, for human readable output.
+Added debug, to show many internal statistics on the ESP32.
